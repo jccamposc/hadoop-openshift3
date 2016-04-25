@@ -13,10 +13,18 @@ objects:
     name: hadoop-master
   spec:
     containers:
+    - env:
+      - name: REDIS_PASSWORD
+        value: ${REDIS_PASSWORD} 
       image: sequenceiq/hadoop-docker
       name: master
       ports:
       - containerPort: 8088
         protocol: TCP
+parameters:  
+- description: Password used for Redis authentication
+  from: '[A-Z0-9]{8}'   
+  generate: expression
+  name: REDIS_PASSWORD
 labels:      
   redis: master
