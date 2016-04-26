@@ -2,7 +2,7 @@
   "kind": "Template",
   "apiVersion": "v1",
   "metadata": {
-    "name": "Cluster-Hadoop",
+    "name": "cluster-hadoop",
     "annotations": {
       "description": "An example Hadoop application",
       "tags": "Hadoop",
