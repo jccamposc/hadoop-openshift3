@@ -10,14 +10,14 @@
     }
   },
   "labels": {
-    "template": "${APPLICATION_NAME}-example"
+    "template": "cluster-hadoop-example"
   },
    "objects": [
 		{
 		  "kind": "Service",
 		  "apiVersion": "v1",
 		  "metadata": {
-			"name": "${APPLICATION_NAME}-example",
+			"name": "cluster-hadoop-example",
 			"annotations": {
 			  "description": "Exposes and load balances the application pods"
 			}
@@ -31,18 +31,18 @@
 			  }
 			],
 			"selector": {
-			  "name": "${APPLICATION_NAME}-example"
+			  "name": "cluster-hadoop-example"
 			}
 		  }
 		},
 		{
 			"kind": "Route",
 			"apiVersion": "v1",
-			"id": "${APPLICATION_NAME}-http",
+			"id": "cluster-hadoop-http",
 			"metadata": {
-				"name": "${APPLICATION_NAME}",
+				"name": "$cluster-hadoop",
 				"labels": {
-					"application": "${APPLICATION_NAME}"
+					"application": "cluster-hadoop"
 				},
 				"annotations": {
 					"description": "Route for application's http service."
@@ -59,9 +59,9 @@
 			"kind": "Pod",
 			"apiVersion": "v1",
 			"metadata": {
-				"name": "${APPLICATION_NAME}",
+				"name": "cluster-hadoop",
 				"labels": {
-					"application": "${APPLICATION_NAME}"
+					"application": "cluster-hadoop"
 				},
 				"annotations": {
 					"description": "Route for application's http service."
@@ -161,6 +161,10 @@
 				"description": "The name for the application.",
 				"value": "cluster-hadoop",
 				"required": true
+			},
+			{
+				"name": "APPLICATION_DOMAIN",
+				"description": "Custom hostname for service routes.  Leave blank for default hostname, e.g.: \u003capplication-name\u003e.\u003cproject\u003e.\u003cdefault-domain-suffix\u003e"
 			}
 		]
  
