@@ -73,7 +73,7 @@
 			"apiVersion": "v1",
 			"id": "cluster-hadoop-http",
 			"metadata": {
-				"name": "$cluster-hadoop",
+				"name": "namenode-route",
 				"labels": {
 					"application": "cluster-hadoop"
 				},
@@ -82,9 +82,10 @@
 				}
 			},
 			"spec": {
-				"host": "${APPLICATION_DOMAIN}",
+				"host": "${APP_HOST_NAME}",
 				"to": {
-					"name": "${APPLICATION_NAME}"
+					"kind": "Service",
+                    "name": "namenode-web"
 				}
 			}
 		},
@@ -137,7 +138,12 @@
 			{
 				"name": "APPLICATION_DOMAIN",
 				"description": "Custom hostname for service routes.  Leave blank for default hostname, e.g.: \u003capplication-name\u003e.\u003cproject\u003e.\u003cdefault-domain-suffix\u003e"
-			}
+			},
+			{
+            "name": "APP_HOST_NAME",
+            "description": "The DNS name this application will be exposed on",
+            "value": "hadoop.nna.nb.no"
+        }
 		]
  
 } 
