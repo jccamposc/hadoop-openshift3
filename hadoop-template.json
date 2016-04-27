@@ -139,7 +139,7 @@
 				"containers": [
 				  {
 					"name": "helloworld",
-					"image": "openshift/openshift/origin-ruby-sample",
+					"image": "hadoop-openshift-jc",
 					"ports": [
 					  {
 						"containerPort": 8080,
