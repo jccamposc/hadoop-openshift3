@@ -103,7 +103,7 @@
 		  "kind": "DeploymentConfig",
 		  "apiVersion": "v1",
 		  "metadata": {
-			"name": "hadoop-openshift"
+			"name": "hadoop-namenode"
 		  },
 		  "spec": {
 			"strategy": {
