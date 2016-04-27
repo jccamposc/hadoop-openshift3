@@ -99,76 +99,133 @@
                 "dockerImageRepository": "sequenceiq/hadoop-docker"
             }
         },
+
 		{
-		  "kind": "DeploymentConfig",
-		  "apiVersion": "v1",
-		  "metadata": {
-			"name": "hadoop-namenode"
-		  },
-		  "spec": {
-			"strategy": {
-			  "type": "Recreate",
-			  "resources": {}
-			},
-			"triggers": [
-			  {
-				"type": "ImageChange",
-				"imageChangeParams": {
-				  "automatic": true,
-				  "containerNames": [
-					"hadoop-namenode",
-                    "hadoop-datanode"
-				  ],
-				  "from": {},
-				  "lastTriggeredImage": ""
-				}
-			  }
-			],
-			"replicas": 1,
-			"selector": {
-			  "name": "frontend"
-			},
-			"template": {
-			  "metadata": {
-				"creationTimestamp": null,
-				"labels": {
-				  "name": "frontend"
-				}
-			  },
-			  "spec": {
-				"containers": [
-				  {
-					"name": "helloworld",
-					"image": "hadoop-openshift-jc",
-					"ports": [
-					  {
-						"containerPort": 8080,
-						"protocol": "TCP"
-					  }
-					],
-					"resources": {},
-					"terminationMessagePath": "/dev/termination-log",
-					"imagePullPolicy": "IfNotPresent",
-					"capabilities": {},
-					"securityContext": {
-					  "capabilities": {},
-					  "privileged": false
-					}
-				  }
-				],
-				"restartPolicy": "Always",
-				"dnsPolicy": "ClusterFirst"
-			  }
-			}
-		  }
-		}		
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate"
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "${APPLICATION_NAME}"
+                            ],
+                            "from": {
+                                "kind": "ImageStream",
+                                "name": "${APPLICATION_NAME}"
+                            }
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}"
+                },
+                "template": {
+                    "metadata": {
+                        "name": "${APPLICATION_NAME}",
+                        "labels": {
+                            "deploymentConfig": "${APPLICATION_NAME}",
+                            "application": "${APPLICATION_NAME}"
+                        }
+                    },
+                    "spec": {
+                        "terminationGracePeriodSeconds": 60,
+                        "containers": [
+                            {
+                                "name": "${APPLICATION_NAME}",
+                                "image": "${APPLICATION_NAME}",
+                                "imagePullPolicy": "Always",
+                                "readinessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/bash",
+                                            "-c",
+                                            "/opt/eap/bin/readinessProbe.sh"
+                                        ]
+                                    }
+                                },
+                                "ports": [
+                                    {
+                                        "name": "http",
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "name": "ping",
+                                        "containerPort": 8888,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "OPENSHIFT_KUBE_PING_LABELS",
+                                        "value": "application=${APPLICATION_NAME}"
+                                    },
+                                    {
+                                        "name": "OPENSHIFT_KUBE_PING_NAMESPACE",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "fieldPath": "metadata.namespace"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "HORNETQ_CLUSTER_PASSWORD",
+                                        "value": "${HORNETQ_CLUSTER_PASSWORD}"
+                                    },
+                                    {
+                                        "name": "HORNETQ_QUEUES",
+                                        "value": "${HORNETQ_QUEUES}"
+                                    },
+                                    {
+                                        "name": "HORNETQ_TOPICS",
+                                        "value": "${HORNETQ_TOPICS}"
+                                    },
+                                    {
+                                        "name": "MONGODB_USER",
+                                        "value": "${MONGODB_USER}"
+                                    },
+                                    {
+                                        "name": "MONGODB_PASSWORD",
+                                        "value": "${MONGODB_PASSWORD}"
+                                    },
+                                    {
+                                        "name": "MONGODB_DATABASE",
+                                        "value": "${MONGODB_DATABASE}"
+                                    },
+                                    {
+                                        "name": "MONGODB_ADMIN_PASSWORD",
+                                        "value": "${MONGODB_ADMIN_PASSWORD}"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        }
 			
 	],
    "parameters": [
 			{
 				"name": "APPLICATION_NAME",
 				"description": "The name for the application.",
-				"value": "cluster-hadoop",
+				"value": "clusterhadoop",
 				"required": true
 			},
 			{
