@@ -98,7 +98,70 @@
             "spec": {
                 "dockerImageRepository": "sequenceiq/hadoop-docker"
             }
-        }		
+        },
+		{
+		  "kind": "DeploymentConfig",
+		  "apiVersion": "v1",
+		  "metadata": {
+			"name": "hadoop-openshift"
+		  },
+		  "spec": {
+			"strategy": {
+			  "type": "Recreate",
+			  "resources": {}
+			},
+			"triggers": [
+			  {
+				"type": "ImageChange",
+				"imageChangeParams": {
+				  "automatic": true,
+				  "containerNames": [
+					"hadoop-namenode",
+                    "hadoop-datanode"
+				  ],
+				  "from": {},
+				  "lastTriggeredImage": ""
+				}
+			  }
+			],
+			"replicas": 1,
+			"selector": {
+			  "name": "frontend"
+			},
+			"template": {
+			  "metadata": {
+				"creationTimestamp": null,
+				"labels": {
+				  "name": "frontend"
+				}
+			  },
+			  "spec": {
+				"containers": [
+				  {
+					"name": "helloworld",
+					"image": "openshift/openshift/origin-ruby-sample",
+					"ports": [
+					  {
+						"containerPort": 8080,
+						"protocol": "TCP"
+					  }
+					],
+					"resources": {},
+					"terminationMessagePath": "/dev/termination-log",
+					"imagePullPolicy": "IfNotPresent",
+					"capabilities": {},
+					"securityContext": {
+					  "capabilities": {},
+					  "privileged": false
+					}
+				  }
+				],
+				"restartPolicy": "Always",
+				"dnsPolicy": "ClusterFirst"
+			  }
+			}
+		  }
+		}		
 			
 	],
    "parameters": [
@@ -116,7 +179,17 @@
             "name": "APP_HOST_NAME",
             "description": "The DNS name this application will be exposed on",
             "value": "hadoop.nna.nb.no"
-        }
+			},
+			{
+            "name": "APP_HOST_NAME",
+            "description": "The DNS name this application will be exposed on",
+            "value": "hadoop.nna.nb.no"
+			},
+			{
+            "name": "FRONTEND_SCHEME",
+            "description": "Which scheme should be exposed in links to self",
+            "value": "https"
+			}
 		]
  
 } 
