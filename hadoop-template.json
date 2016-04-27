@@ -36,25 +36,25 @@
 		  }
 		},
 		{
-			"kind": "Route",
-			"apiVersion": "v1",
-			"id": "cluster-hadoop-http",
-			"metadata": {
-				"name": "$cluster-hadoop",
-				"labels": {
-					"application": "cluster-hadoop"
-				},
-				"annotations": {
-					"description": "Route for application's http service."
-				}
-			},
-			"spec": {
-				"host": "${APPLICATION_DOMAIN}",
-				"to": {
-					"name": "${APPLICATION_NAME}"
-				}
-			}
-		},
+            "kind": "Route",
+            "apiVersion": "v1",
+            "id": "${APPLICATION_NAME}-http",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "Route for application's http service."
+                }
+            },
+            "spec": {
+                "host": "${APPLICATION_DOMAIN}",
+                "to": {
+                    "name": "${APPLICATION_NAME}"
+                }
+            }
+        },
 		{
 			"kind": "Pod",
 			"apiVersion": "v1",
