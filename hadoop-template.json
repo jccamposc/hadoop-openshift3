@@ -89,7 +89,6 @@
                 "sessionAffinity": "None"
             }
         },
-		
 		{
             "kind": "ImageStream",
             "apiVersion": "v1",
@@ -98,6 +97,308 @@
             },
             "spec": {
                 "dockerImageRepository": "sequenceiq/hadoop-docker"
+            }
+        },
+		{
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "hadoop-namenode"
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling",
+                    "rollingParams": {
+                        "updatePeriodSeconds": 1,
+                        "intervalSeconds": 1,
+                        "timeoutSeconds": 120
+                    }
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "hadoop-namenode",
+                                "hadoop-datanode"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "hadoop-openshift:0.1.0-BETA"
+                            }
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "name": "hadoop-namenode"
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "name": "hadoop-namenode"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "hadoop-namenode",
+                                "image": "sequenceiq/hadoop-docker",
+                                "args": ["start_namenode.sh"],
+                                "ports": [
+                                    {
+                                        "containerPort": 22,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 7373,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 7946,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 9000,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50010,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50020,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50070,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50075,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50090,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50475,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8030,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8031,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8032,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8033,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8040,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8042,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8060,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8088,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50060,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "FRONTEND_SCHEME",
+                                        "value": "${FRONTEND_SCHEME}"
+                                    },
+                                    {
+                                        "name": "APP_HOST_NAME",
+                                        "value": "${APP_HOST_NAME}"
+                                    }
+                                ],
+                                "imagePullPolicy": "IfNotPresent"
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "dnsPolicy": "ClusterFirst"
+                    }
+                }
+            }
+        },
+		        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "hadoop-datanode"
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling",
+                    "rollingParams": {
+                        "updatePeriodSeconds": 1,
+                        "intervalSeconds": 1,
+                        "timeoutSeconds": 120
+                    }
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "hadoop-datanode"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "hadoop-openshift:0.1.0-BETA"
+                            }
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "name": "hadoop-datanode"
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "name": "hadoop-datanode"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "hadoop-datanode",
+                                "image": "sequenceiq/hadoop-docker",
+                                "args": ["start_datanode.sh"],
+                                "ports": [
+                                    {
+                                        "containerPort": 22,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 7373,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 7946,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 9000,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50010,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50020,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50070,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50075,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50090,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50475,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8030,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8031,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8032,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8033,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8040,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8042,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8060,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8088,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 50060,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "FRONTEND_SCHEME",
+                                        "value": "${FRONTEND_SCHEME}"
+                                    },
+                                    {
+                                        "name": "APP_HOST_NAME",
+                                        "value": "${APP_HOST_NAME}"
+                                    },
+                                    {
+                                        "name": "POD_NAMESPACE",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "fieldPath": "metadata.namespace"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "imagePullPolicy": "IfNotPresent"
+                            }
+                        ],
+                        "serviceAccount": "deployer",
+                        "restartPolicy": "Always",
+                        "dnsPolicy": "ClusterFirst"
+                    }
+                }
             }
         }
 			
