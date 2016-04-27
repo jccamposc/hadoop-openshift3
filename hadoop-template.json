@@ -13,12 +13,34 @@
     "template": "cluster-hadoop-example"
   },
    "objects": [
-   {
+		{
+		  "kind": "Service",
+		  "apiVersion": "v1",
+		  "metadata": {
+			"name": "cluster-hadoop-example",
+			"annotations": {
+			  "description": "Exposes and load balances the application pods"
+			}
+		  },
+		  "spec": {
+			"ports": [
+			  {
+				"name": "web",
+				"port": 8080,
+				"targetPort": 8080
+			  }
+			],
+			"selector": {
+			  "name": "cluster-hadoop-example"
+			}
+		  }
+		},
+		{
 			"kind": "Route",
 			"apiVersion": "v1",
 			"id": "cluster-hadoop-http",
 			"metadata": {
-				"name": "namenode-route",
+				"name": "$cluster-hadoop",
 				"labels": {
 					"application": "cluster-hadoop"
 				},
@@ -27,80 +49,51 @@
 				}
 			},
 			"spec": {
-				"host": "${APP_HOST_NAME}",
+				"host": "${APPLICATION_DOMAIN}",
 				"to": {
-					"kind": "Service",
-                    "name": "namenode-web"
+					"name": "${APPLICATION_NAME}"
 				}
 			}
 		},
 		{
-            "kind": "Service",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "namenode"
-            },
-            "spec": {
-                "ports": [
-                    {
-                        "name": "namenode-web",
-                        "protocol": "TCP",
-                        "port": 80,
-                        "targetPort": 50070,
-                        "nodePort": 0
-                    },
-                    {
-                        "name": "namenode-fs",
-                        "protocol": "TCP",
-                        "port": 9000,
-                        "targetPort": 9000,
-                        "nodePort": 0
-                    }
-                ],
-                "selector": {
-                    "name": "hadoop-namenode"
-                },
-                "portalIP": "",
-                "type": "ClusterIP",
-                "sessionAffinity": "None"
-            }
-        },
-        {
-            "kind": "Service",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "namenode-web"
-            },
-            "spec": {
-                "ports": [
-                    {
-                        "name": "namenode-web",
-                        "protocol": "TCP",
-                        "port": 50070,
-                        "targetPort": 50070,
-                        "nodePort": 0
-                    }
-                ],
-                "selector": {
-                    "name": "hadoop-namenode"
-                },
-                "portalIP": "",
-                "type": "ClusterIP",
-                "sessionAffinity": "None"
-            }
-        },
-		{
-            "kind": "ImageStream",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "cluster-hadoop"
-            },
-            "spec": {
-                "dockerImageRepository": "sequenceiq/hadoop-docker"
-            }
-        },
-
-		{
+			"kind": "Pod",
+			"apiVersion": "v1",
+			"metadata": {
+				"name": "cluster-hadoop",
+				"labels": {
+					"application": "cluster-hadoop"
+				},
+				"annotations": {
+					"description": "Route for application's http service."
+				}
+			},
+			"spec": {
+				"containers": [
+					{
+						"image": "sequenceiq/hadoop-docker",
+						"name": "master-hadoop",
+						"ports": [
+									{
+									"containerPort": 8088,
+									"protocol": "TCP"
+									},
+									{
+									"containerPort": 22,
+									"protocol": "TCP"
+									}
+					    ],
+						 "env": [
+                                    {
+                                        "name": "HADOOP_USER",
+                                        "value": "123"
+                                    }
+                                ],
+                                "resources": {}
+					}
+				]
+			}
+		},
+{
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
@@ -155,7 +148,7 @@
                                         "command": [
                                             "/bin/bash",
                                             "-c",
-                                            "/opt/eap/bin/readinessProbe.sh"
+                                            "/etc/bootstrap.sh -bash"
                                         ]
                                     }
                                 },
@@ -183,69 +176,26 @@
                                                 "fieldPath": "metadata.namespace"
                                             }
                                         }
-                                    },
-                                    {
-                                        "name": "HORNETQ_CLUSTER_PASSWORD",
-                                        "value": "${HORNETQ_CLUSTER_PASSWORD}"
-                                    },
-                                    {
-                                        "name": "HORNETQ_QUEUES",
-                                        "value": "${HORNETQ_QUEUES}"
-                                    },
-                                    {
-                                        "name": "HORNETQ_TOPICS",
-                                        "value": "${HORNETQ_TOPICS}"
-                                    },
-                                    {
-                                        "name": "MONGODB_USER",
-                                        "value": "${MONGODB_USER}"
-                                    },
-                                    {
-                                        "name": "MONGODB_PASSWORD",
-                                        "value": "${MONGODB_PASSWORD}"
-                                    },
-                                    {
-                                        "name": "MONGODB_DATABASE",
-                                        "value": "${MONGODB_DATABASE}"
-                                    },
-                                    {
-                                        "name": "MONGODB_ADMIN_PASSWORD",
-                                        "value": "${MONGODB_ADMIN_PASSWORD}"
                                     }
+                                   
                                 ]
                             }
                         ]
                     }
                 }
             }
-        }
-			
+        }		
 	],
    "parameters": [
 			{
 				"name": "APPLICATION_NAME",
 				"description": "The name for the application.",
-				"value": "clusterhadoop",
+				"value": "cluster-hadoop",
 				"required": true
 			},
 			{
 				"name": "APPLICATION_DOMAIN",
 				"description": "Custom hostname for service routes.  Leave blank for default hostname, e.g.: \u003capplication-name\u003e.\u003cproject\u003e.\u003cdefault-domain-suffix\u003e"
-			},
-			{
-            "name": "APP_HOST_NAME",
-            "description": "The DNS name this application will be exposed on",
-            "value": "hadoop.nna.nb.no"
-			},
-			{
-            "name": "APP_HOST_NAME",
-            "description": "The DNS name this application will be exposed on",
-            "value": "hadoop.nna.nb.no"
-			},
-			{
-            "name": "FRONTEND_SCHEME",
-            "description": "Which scheme should be exposed in links to self",
-            "value": "https"
 			}
 		]
  
