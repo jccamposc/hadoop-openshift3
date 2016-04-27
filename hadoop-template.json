@@ -418,6 +418,16 @@
             "name": "APP_HOST_NAME",
             "description": "The DNS name this application will be exposed on",
             "value": "hadoop.nna.nb.no"
+			},
+			{
+            "name": "APP_HOST_NAME",
+            "description": "The DNS name this application will be exposed on",
+            "value": "hadoop.nna.nb.no"
+        },
+        {
+            "name": "FRONTEND_SCHEME",
+            "description": "Which scheme should be exposed in links to self",
+            "value": "https"
         }
 		]
  
