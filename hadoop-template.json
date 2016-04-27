@@ -13,28 +13,61 @@
     "template": "cluster-hadoop-example"
   },
    "objects": [
-		{
-		  "kind": "Service",
-		  "apiVersion": "v1",
-		  "metadata": {
-			"name": "cluster-hadoop-example",
-			"annotations": {
-			  "description": "Exposes and load balances the application pods"
-			}
-		  },
-		  "spec": {
-			"ports": [
-			  {
-				"name": "web",
-				"port": 8080,
-				"targetPort": 8080
-			  }
-			],
-			"selector": {
-			  "name": "cluster-hadoop-example"
-			}
-		  }
-		},
+    {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "namenode"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "namenode-web",
+                        "protocol": "TCP",
+                        "port": 80,
+                        "targetPort": 50070,
+                        "nodePort": 0
+                    },
+                    {
+                        "name": "namenode-fs",
+                        "protocol": "TCP",
+                        "port": 9000,
+                        "targetPort": 9000,
+                        "nodePort": 0
+                    }
+                ],
+                "selector": {
+                    "name": "hadoop-namenode"
+                },
+                "portalIP": "",
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "namenode-web"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "namenode-web",
+                        "protocol": "TCP",
+                        "port": 50070,
+                        "targetPort": 50070,
+                        "nodePort": 0
+                    }
+                ],
+                "selector": {
+                    "name": "hadoop-namenode"
+                },
+                "portalIP": "",
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            }
+        },
 		{
 			"kind": "Route",
 			"apiVersion": "v1",
