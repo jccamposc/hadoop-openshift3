@@ -13,7 +13,28 @@
     "template": "cluster-hadoop-example"
   },
    "objects": [
-    {
+   {
+			"kind": "Route",
+			"apiVersion": "v1",
+			"id": "cluster-hadoop-http",
+			"metadata": {
+				"name": "namenode-route",
+				"labels": {
+					"application": "cluster-hadoop"
+				},
+				"annotations": {
+					"description": "Route for application's http service."
+				}
+			},
+			"spec": {
+				"host": "${APP_HOST_NAME}",
+				"to": {
+					"kind": "Service",
+                    "name": "namenode-web"
+				}
+			}
+		},
+		{
             "kind": "Service",
             "apiVersion": "v1",
             "metadata": {
@@ -68,65 +89,18 @@
                 "sessionAffinity": "None"
             }
         },
+		
 		{
-			"kind": "Route",
-			"apiVersion": "v1",
-			"id": "cluster-hadoop-http",
-			"metadata": {
-				"name": "namenode-route",
-				"labels": {
-					"application": "cluster-hadoop"
-				},
-				"annotations": {
-					"description": "Route for application's http service."
-				}
-			},
-			"spec": {
-				"host": "${APP_HOST_NAME}",
-				"to": {
-					"kind": "Service",
-                    "name": "namenode-web"
-				}
-			}
-		},
-		{
-			"kind": "Pod",
-			"apiVersion": "v1",
-			"metadata": {
-				"name": "cluster-hadoop",
-				"labels": {
-					"application": "cluster-hadoop"
-				},
-				"annotations": {
-					"description": "Route for application's http service."
-				}
-			},
-			"spec": {
-				"containers": [
-					{
-						"image": "sequenceiq/hadoop-docker",
-						"name": "master-hadoop",
-						"ports": [
-									{
-									"containerPort": 8088,
-									"protocol": "TCP"
-									},
-									{
-									"containerPort": 22,
-									"protocol": "TCP"
-									}
-					    ],
-						 "env": [
-                                    {
-                                        "name": "HADOOP_USER",
-                                        "value": "123"
-                                    }
-                                ],
-                                "resources": {}
-					}
-				]
-			}
-		}		
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "cluster-hadoop"
+            },
+            "spec": {
+                "dockerImageRepository": "sequenceiq/hadoop-docker"
+            }
+        }
+			
 	],
    "parameters": [
 			{
