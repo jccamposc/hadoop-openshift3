@@ -387,12 +387,11 @@
         {
             "name": "SOURCE_REPOSITORY_URL",
             "description": "Git source URI for application",
-            "value": "",
-            
+            "value": ""
         },
         {
             "name": "SOURCE_REPOSITORY_REF",
-            "description": "Git branch/tag reference",
+            "description": "Git branch/tag reference"
         },
         {
             "name": "CONTEXT_DIR",
