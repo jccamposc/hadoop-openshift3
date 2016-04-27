@@ -17,7 +17,7 @@
 		  "kind": "Service",
 		  "apiVersion": "v1",
 		  "metadata": {
-			"name": "cluster-hadoop-example",
+			"name": "${APPLICATION_NAME}",
 			"annotations": {
 			  "description": "Exposes and load balances the application pods"
 			}
@@ -31,7 +31,7 @@
 			  }
 			],
 			"selector": {
-			  "name": "cluster-hadoop-example"
+			  "name": "${APPLICATION_NAME}"
 			}
 		  }
 		},
