@@ -88,7 +88,6 @@
                         "forcePull": true,
                         "from": {
                             "kind": "ImageStreamTag",
-                            "namespace": "${IMAGE_STREAM_NAMESPACE}",
                             "name": "sequenceiq/hadoop-docker"
                         }
                     }
