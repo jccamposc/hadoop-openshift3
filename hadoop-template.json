@@ -64,69 +64,31 @@
             }
         },
 		
-		
-	{
-  "kind": "DeploymentConfig",
-  "apiVersion": "v1",
-  "metadata": {
-    "name": "${APPLICATION_NAME}"
-  },
-  "spec": {
-    "strategy": {
-      "type": "Recreate",
-      "resources": {}
+		{
+  "kind": "BuildConfig",
+    "apiVersion": "v1",
+    "metadata": {
+      "name": "${APPLICATION_NAME}-build" 
     },
-    "triggers": [
-      {
-        "type": "ImageChange",
-        "imageChangeParams": {
-          "automatic": true,
-          "containerNames": [
-            "${APPLICATION_NAME}"
-          ],
-          "from": {},
-          "lastTriggeredImage": ""
+  "spec": {
+    "strategy": { 
+      "type": "Source",
+      "sourceStrategy": {
+        "from": {
+          "kind": "ImageStreamTag",
+          "name": "hadoop-openshift:latest"
         }
       }
-    ],
-    "replicas": 1,
-    "selector": {
-      "name": "frontend"
     },
-    "template": {
-      "metadata": {
-        "creationTimestamp": null,
-        "labels": {
-          "name": "frontend"
-        }
-      },
-      "spec": {
-        "containers": [
-          {
-            "name": "${APPLICATION_NAME}",
-            "image": "sequenceiq/hadoop-docker",
-            "ports": [
-              {
-                "containerPort": 8080,
-                "protocol": "TCP"
-              }
-            ],
-            "resources": {},
-            "terminationMessagePath": "/dev/termination-log",
-            "imagePullPolicy": "IfNotPresent",
-            "capabilities": {},
-            "securityContext": {
-              "capabilities": {},
-              "privileged": false
-            }
-          }
-        ],
-        "restartPolicy": "Always",
-        "dnsPolicy": "ClusterFirst"
+    "output": { 
+      "to": {
+        "kind": "ImageStreamTag",
+        "name": "origin-hadoop-sample:latest"
       }
     }
   }
-}	,
+},
+		
 		
 		
 	{
