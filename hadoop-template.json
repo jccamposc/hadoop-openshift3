@@ -42,7 +42,7 @@
         "name": "${APPLICATION_NAME}"
       },
       "spec": {
-        "host": "${APPLICATION_DOMAIN}.development.cloud.isban.us",
+        "host": "${APPLICATION_DOMAIN}.dev.cloud.isban.us",
         "to": {
           "kind": "Service",
           "name": "${APPLICATION_NAME}"
