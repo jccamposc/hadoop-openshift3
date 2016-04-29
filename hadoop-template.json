@@ -80,12 +80,49 @@
 				"image": "sequenceiq/hadoop-docker",
 				"name": "master-hadoop",
 				"ports": [{
+					"containerPort": 8042,
+					"protocol": "TCP"
+				}, {
 					"containerPort": 8088,
 					"protocol": "TCP"
 				}, {
-					"containerPort": 22,
+					"containerPort": 50070,
 					"protocol": "TCP"
-				}],
+				}, {
+					"containerPort": 50075,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 50090,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8030,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8031,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8032,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8033,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8040,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8042,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8088,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 49707,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 2122,
+					"protocol": "TCP"
+				}
+				],
 				"env": [{
 					"name": "HADOOP_USER",
 					"value": "123"
