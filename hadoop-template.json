@@ -169,7 +169,7 @@
                         "containers": [
                             {
                                 "name": "hadoop",
-                                "image": "sequenceiq/hadoop-docker"",
+                                "image": "sequenceiq/hadoop-docker",
                                 "ports": [
                                     {
                                         "containerPort": 27017,
