@@ -134,26 +134,7 @@
                     "type": "Recreate",
                     "resources": {}
                 },
-                "triggers": [
-                    {
-                        "type": "ImageChange",
-                        "imageChangeParams": {
-                            "automatic": true,
-                            "containerNames": [
-                                "hadoop"
-                            ],
-                            "from": {
-                                "kind": "ImageStreamTag",
-                                "name": "mongodb:latest",
-                                "namespace": "openshift"
-                            },
-                            "lastTriggeredImage": ""
-                        }
-                    },
-                    {
-                        "type": "ConfigChange"
-                    }
-                ],
+              
                 "replicas": 1,
                 "selector": {
                     "name": "${DATABASE_SERVICE_NAME}"
