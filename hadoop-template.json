@@ -4,9 +4,9 @@
     "metadata": {
         "name": "hadoop-isban",
         "annotations": {
-            "description": "Application template for MLB Parks application on EAP 6 \u0026 MongoDB built using STI,",
+            "description": "Application template for hadoop",
             "iconClass": "icon-jboss",
-            "tags": "eap,javaee,java,jboss,xpaas,mongodb,instant-app"
+            "tags": "hadoop-app"
         }
     },
     "objects": [
@@ -64,7 +64,63 @@
                 }
             }
         },
-       
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            },
+            "spec": {
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "${SOURCE_REPOSITORY_URL}",
+                        "ref": "${SOURCE_REPOSITORY_REF}"
+                    },
+                    "contextDir": "${CONTEXT_DIR}"
+                },
+                "strategy": {
+                    "type": "Source",
+                    "sourceStrategy": {
+                        "forcePull": true,
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "name": "sequenceiq/hadoop-docker"
+                        }
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "${APPLICATION_NAME}:latest"
+                    }
+                },
+                "triggers": [
+                    {
+                        "type": "GitHub",
+                        "github": {
+                            "secret": "${GITHUB_WEBHOOK_SECRET}"
+                        }
+                    },
+                    {
+                        "type": "Generic",
+                        "generic": {
+                            "secret": "${GENERIC_WEBHOOK_SECRET}"
+                        }
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {}
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            }
+        },
         {
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
@@ -120,7 +176,7 @@
                                         "command": [
                                             "/bin/bash",
                                             "-c",
-                                            "/opt/eap/bin/readinessProbe.sh"
+                                            "/etc/bootstrap.sh -bash"
                                         ]
                                     }
                                 },
