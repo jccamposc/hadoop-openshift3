@@ -10,7 +10,7 @@
     }
   },
   "labels": {
-    "template": "${APPLICATION_NAME}"
+    "template": "hadoop"
   },
    "objects": [
 		{
