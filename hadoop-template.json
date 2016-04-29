@@ -10,7 +10,7 @@
 		}
 	},
 	"labels": {
-		"template": "hadoop"
+		"template": "${APPLICATION_NAME}"
 	},
 	"objects": [{
 		"kind": "Service",
