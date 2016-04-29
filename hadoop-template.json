@@ -5,7 +5,7 @@
         "name": "hadoop-isban",
         "annotations": {
             "description": "Application template for hadoop",
-            "iconClass": "icon-jboss",
+            "iconClass": "icon-hadoop",
             "tags": "hadoop-app"
         }
     },
@@ -376,7 +376,7 @@
         {
             "name": "APPLICATION_NAME",
             "description": "The name for the application.",
-            "value": "hadoopparks",
+            "value": "hadoopapp",
             "required": true
         },
         {
