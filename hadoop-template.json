@@ -89,7 +89,7 @@
                         "from": {
                             "kind": "ImageStreamTag",
                             "namespace": "${IMAGE_STREAM_NAMESPACE}",
-                            "name": "sequenceiq/hadoop-docker"
+                            "name": "hadoop-openshift:1.1"
                         }
                     }
                 },
