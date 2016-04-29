@@ -65,100 +65,64 @@
         },
 		
 		{
-  "kind": "BuildConfig",
-    "apiVersion": "v1",
-    "metadata": {
-      "name": "${APPLICATION_NAME}-build" 
-    },
-  "spec": {
-    "strategy": { 
-      "type": "Source",
-      "sourceStrategy": {
-        "from": {
-          "kind": "ImageStreamTag",
-          "name": "hadoop-openshift:latest"
-        }
-      }
-    },
-    "output": { 
-      "to": {
-        "kind": "ImageStreamTag",
-        "name": "origin-hadoop-sample:latest"
-      }
-    }
-  }
-},
-		
-		
-		
-	{
-		"kind": "Pod",
-		"apiVersion": "v1",
-		"metadata": {
-			"name": "${APPLICATION_NAME}",
-			"labels": {
-				"application": "${APPLICATION_NAME}"
-			},
-			"annotations": {
-				"description": "Route for application's http service."
-			}
-		},
-		"spec": {
-			"containers": [{
-				"image": "sequenceiq/hadoop-docker",
-				"name": "master-hadoop",
-				"ports": [{
-					"containerPort": 8042,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 8088,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 50070,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 50075,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 50090,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 8030,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 8031,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 8032,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 8033,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 8040,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 8042,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 8088,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 49707,
-					"protocol": "TCP"
-				}, {
-					"containerPort": 2122,
-					"protocol": "TCP"
-				}
-				],
-				"env": [{
-					"name": "HADOOP_USER",
-					"value": "123"
-				}],
-				"resources": {}
-			}]
-		}
-	}],
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            },
+            "spec": {
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "${SOURCE_REPOSITORY_URL}",
+                        "ref": "${SOURCE_REPOSITORY_REF}"
+                    },
+                    "contextDir": "${CONTEXT_DIR}"
+                },
+                "strategy": {
+                    "type": "Source",
+                    "sourceStrategy": {
+                        "forcePull": true,
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "namespace": "${IMAGE_STREAM_NAMESPACE}",
+                            "name": "jboss-eap64-openshift:1.1"
+                        }
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "${APPLICATION_NAME}:latest"
+                    }
+                },
+                "triggers": [
+                    {
+                        "type": "GitHub",
+                        "github": {
+                            "secret": "${GITHUB_WEBHOOK_SECRET}"
+                        }
+                    },
+                    {
+                        "type": "Generic",
+                        "generic": {
+                            "secret": "${GENERIC_WEBHOOK_SECRET}"
+                        }
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {}
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            }
+        }		
+],
 	"parameters": [{
 		"name": "APPLICATION_NAME",
 		"description": "The name for the application.",
