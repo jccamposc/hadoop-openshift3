@@ -66,15 +66,6 @@
 					{
 						"image": "sequenceiq/hadoop-docker",
 						"name": "master-hadoop",
-                                "readinessProbe": {
-                                    "exec": {
-                                        "command": [
-                                            "/bin/bash",
-                                            "-c",
-                                            "/opt/eap/bin/readinessProbe.sh"
-                                        ]
-                                    }
-                                },
 						"ports": [
 									{
 									"containerPort": 8088,
