@@ -140,7 +140,7 @@
                         "imageChangeParams": {
                             "automatic": true,
                             "containerNames": [
-                                "mongodb"
+                                "hadoop"
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
