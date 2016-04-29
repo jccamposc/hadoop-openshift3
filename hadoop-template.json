@@ -153,9 +153,48 @@
                                 "image": "sequenceiq/hadoop-docker",
                                 "ports": [
                                     {
-                                        "containerPort": 27017,
-                                        "protocol": "TCP"
-                                    }
+					"containerPort": 8042,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8088,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 50070,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 50075,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 50090,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8030,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8031,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8032,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8033,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8040,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8042,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 8088,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 49707,
+					"protocol": "TCP"
+				}, {
+					"containerPort": 2122,
+					"protocol": "TCP"
+				}
                                 ],
                                 
                                 "resources": {},
