@@ -13,196 +13,219 @@
 		"template": "hadoop"
 	},
 	"objects": [{
-			"kind": "Service",
-			"apiVersion": "v1",
-			"spec": {
-				"ports": [{
-					"port": 8080,
-					"targetPort": 8080
-				}],
-				"selector": {
-					"deploymentConfig": "${APPLICATION_NAME}"
-				}
-			},
-			"metadata": {
-				"name": "${APPLICATION_NAME}",
-				"labels": {
-					"application": "${APPLICATION_NAME}"
-				},
-				"annotations": {
-					"description": "The web server's http port."
-				}
-			}
-		}, {
-			"kind": "Route",
-			"apiVersion": "v1",
-			"id": "${APPLICATION_NAME}-http",
-			"metadata": {
-				"name": "${APPLICATION_NAME}",
-				"labels": {
-					"application": "${APPLICATION_NAME}"
-				},
-				"annotations": {
-					"description": "Route for application's http service."
-				}
-			},
-			"spec": {
-				"host": "${APPLICATION_DOMAIN}",
-				"to": {
-					"name": "${APPLICATION_NAME}"
-				}
-			}
-		}, {
-			"kind": "ImageStream",
-			"apiVersion": "v1",
-			"metadata": {
-				"name": "${APPLICATION_NAME}",
-				"labels": {
-					"application": "${APPLICATION_NAME}"
-				}
+		"kind": "Service",
+		"apiVersion": "v1",
+		"spec": {
+			"ports": [{
+				"port": 8080,
+				"targetPort": 8080
+			}],
+			"selector": {
+				"deploymentConfig": "${APPLICATION_NAME}"
 			}
 		},
-
-		{
-			"kind": "BuildConfig",
-			"apiVersion": "v1",
-			"metadata": {
-				"name": "${APPLICATION_NAME}",
-				"labels": {
-					"application": "${APPLICATION_NAME}"
-				}
+		"metadata": {
+			"name": "${APPLICATION_NAME}",
+			"labels": {
+				"application": "${APPLICATION_NAME}"
 			},
-			"spec": {
-				"source": {
-					"type": "Git",
-					"git": {
-						"uri": "${SOURCE_REPOSITORY_URL}",
-						"ref": "${SOURCE_REPOSITORY_REF}"
-					},
-					"contextDir": "${CONTEXT_DIR}"
-				},
-				"strategy": {
-					"type": "Source",
-					"sourceStrategy": {
-						"forcePull": true,
-						"from": {
-							"kind": "ImageStreamTag",
-							"namespace": "${IMAGE_STREAM_NAMESPACE}",
-							"name": "hadoop-openshift:1.1"
-						}
-					}
-				},
-				"output": {
-					"to": {
-						"kind": "ImageStreamTag",
-						"name": "${APPLICATION_NAME}:latest"
-					}
-				},
-				"triggers": [{
-					"type": "GitHub",
-					"github": {
-						"secret": "${GITHUB_WEBHOOK_SECRET}"
-					}
-				}, {
-					"type": "Generic",
-					"generic": {
-						"secret": "${GENERIC_WEBHOOK_SECRET}"
-					}
-				}, {
-					"type": "ImageChange",
-					"imageChange": {}
-				}, {
-					"type": "ConfigChange"
-				}]
+			"annotations": {
+				"description": "The web server's http port."
 			}
-		}, {
-			"kind": "DeploymentConfig",
-			"apiVersion": "v1",
-			"metadata": {
-				"name": "${DATABASE_SERVICE_NAME}",
-				"creationTimestamp": null
-			},
-			"spec": {
-				"strategy": {
-					"type": "Recreate",
-					"resources": {}
-				},
-				"triggers": [{
-					"type": "ImageChange",
-					"imageChangeParams": {
-						"automatic": true,
-						"containerNames": [
-							"mongodb"
-						],
-						"from": {
-							"kind": "ImageStreamTag",
-							"name": "mongodb:latest",
-							"namespace": "openshift"
-						},
-						"lastTriggeredImage": ""
-					}
-				}, {
-					"type": "ConfigChange"
-				}],
-				"replicas": 1,
-				"selector": {
-					"name": "${DATABASE_SERVICE_NAME}"
-				},
-				"template": {
-					"metadata": {
-						"creationTimestamp": null,
-						"labels": {
-							"name": "${DATABASE_SERVICE_NAME}"
-						}
-					},
-					"spec": {
-						"containers": [{
-							"name": "mongodb",
-							"image": "mongodb",
-							"ports": [{
-								"containerPort": 27017,
-								"protocol": "TCP"
-							}],
-							"env": [{
-								"name": "MONGODB_USER",
-								"value": "${MONGODB_USER}"
-							}, {
-								"name": "MONGODB_PASSWORD",
-								"value": "${MONGODB_PASSWORD}"
-							}, {
-								"name": "MONGODB_DATABASE",
-								"value": "${MONGODB_DATABASE}"
-							}, {
-								"name": "MONGODB_ADMIN_PASSWORD",
-								"value": "${MONGODB_ADMIN_PASSWORD}"
-							}],
-							"resources": {},
-							"volumeMounts": [{
-								"name": "${DATABASE_SERVICE_NAME}-data",
-								"mountPath": "/var/lib/mongodb/data"
-							}],
-							"terminationMessagePath": "/dev/termination-log",
-							"imagePullPolicy": "IfNotPresent",
-							"capabilities": {},
-							"securityContext": {
-								"capabilities": {},
-								"privileged": false
-							}
-						}],
-						"volumes": [{
-							"name": "${DATABASE_SERVICE_NAME}-data",
-							"emptyDir": {
-								"medium": ""
-							}
-						}],
-						"restartPolicy": "Always",
-						"dnsPolicy": "ClusterFirst"
-					}
-				}
-			},
-			"status": {}
 		}
-	],
+	}, {
+		"kind": "Route",
+		"apiVersion": "v1",
+		"id": "${APPLICATION_NAME}-http",
+		"metadata": {
+			"name": "${APPLICATION_NAME}",
+			"labels": {
+				"application": "${APPLICATION_NAME}"
+			},
+			"annotations": {
+				"description": "Route for application's http service."
+			}
+		},
+		"spec": {
+			"host": "${APPLICATION_DOMAIN}",
+			"to": {
+				"name": "${APPLICATION_NAME}"
+			}
+		}
+	}, 
+	{
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            }
+        },
+		
+		{
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            },
+            "spec": {
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "${SOURCE_REPOSITORY_URL}",
+                        "ref": "${SOURCE_REPOSITORY_REF}"
+                    },
+                    "contextDir": "${CONTEXT_DIR}"
+                },
+                "strategy": {
+                    "type": "Source",
+                    "sourceStrategy": {
+                        "forcePull": true,
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "namespace": "${IMAGE_STREAM_NAMESPACE}",
+                            "name": "hadoop-openshift:1.1"
+                        }
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "${APPLICATION_NAME}:latest"
+                    }
+                },
+                "triggers": [
+                    {
+                        "type": "GitHub",
+                        "github": {
+                            "secret": "${GITHUB_WEBHOOK_SECRET}"
+                        }
+                    },
+                    {
+                        "type": "Generic",
+                        "generic": {
+                            "secret": "${GENERIC_WEBHOOK_SECRET}"
+                        }
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {}
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            }
+        },
+{
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${DATABASE_SERVICE_NAME}",
+                "creationTimestamp": null
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate",
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "mongodb"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "mongodb:latest",
+                                "namespace": "openshift"
+                            },
+                            "lastTriggeredImage": ""
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "name": "${DATABASE_SERVICE_NAME}"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "name": "${DATABASE_SERVICE_NAME}"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "hadoop",
+                                "image": "sequenceiq/hadoop-docker"",
+                                "ports": [
+                                    {
+                                        "containerPort": 27017,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "MONGODB_USER",
+                                        "value": "${MONGODB_USER}"
+                                    },
+                                    {
+                                        "name": "MONGODB_PASSWORD",
+                                        "value": "${MONGODB_PASSWORD}"
+                                    },
+                                    {
+                                        "name": "MONGODB_DATABASE",
+                                        "value": "${MONGODB_DATABASE}"
+                                    },
+                                    {
+                                        "name": "MONGODB_ADMIN_PASSWORD",
+                                        "value": "${MONGODB_ADMIN_PASSWORD}"
+                                    }
+                                ],
+                                "resources": {},
+                                "volumeMounts": [
+                                    {
+                                        "name": "${DATABASE_SERVICE_NAME}-data",
+                                        "mountPath": "/var/lib/mongodb/data"
+                                    }
+                                ],
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "IfNotPresent",
+                                "capabilities": {},
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "volumes": [
+                            {
+                                "name": "${DATABASE_SERVICE_NAME}-data",
+                                "emptyDir": {
+                                    "medium": ""
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "dnsPolicy": "ClusterFirst"
+                    }
+                }
+            },
+            "status": {}
+        }		
+],
 	"parameters": [{
 		"name": "APPLICATION_NAME",
 		"description": "The name for the application.",
@@ -211,71 +234,85 @@
 	}, {
 		"name": "APPLICATION_DOMAIN",
 		"description": "Custom hostname for service routes.  Leave blank for default hostname, e.g.: \u003capplication-name\u003e.\u003cproject\u003e.\u003cdefault-domain-suffix\u003e"
-	}, {
-		"name": "IMAGE_STREAM_NAMESPACE",
-		"description": "Namespace in which the ImageStreams for Red Hat Middleware images are installed. These ImageStreams are normally installed in the openshift namespace. You should only need to modify this if you've installed the ImageStreams in a different namespace/project.",
-		"value": "openshift",
-		"required": true
-	}, {
-		"name": "CONTEXT_DIR",
-		"description": "Path within Git project to build; empty for root project directory."
-	}, {
-		"name": "HORNETQ_QUEUES",
-		"description": "Queue names"
-	}, {
-		"name": "HORNETQ_TOPICS",
-		"description": "Topic names"
-	}, {
-		"name": "HORNETQ_CLUSTER_PASSWORD",
-		"description": "HornetQ cluster admin password",
-		"generate": "expression",
-		"from": "[a-zA-Z0-9]{8}",
-		"required": true
-	}, {
-		"name": "GITHUB_WEBHOOK_SECRET",
-		"description": "GitHub trigger secret",
-		"generate": "expression",
-		"from": "[a-zA-Z0-9]{8}",
-		"required": true
-	}, {
-		"name": "GENERIC_WEBHOOK_SECRET",
-		"description": "Generic build trigger secret",
-		"generate": "expression",
-		"from": "[a-zA-Z0-9]{8}",
-		"required": true
-	}, {
-		"name": "IMAGE_STREAM_NAMESPACE",
-		"description": "Namespace in which the ImageStreams for Red Hat Middleware images are installed. These ImageStreams are normally installed in the openshift namespace. You should only need to modify this if you've installed the ImageStreams in a different namespace/project.",
-		"value": "openshift",
-		"required": true
-	}, {
-		"name": "DATABASE_SERVICE_NAME",
-		"description": "Database service name",
-		"value": "mongodb",
-		"required": true
-	}, {
-		"name": "MONGODB_USER",
-		"description": "Username for MongoDB user that will be used for accessing the database",
-		"generate": "expression",
-		"from": "user[A-Z0-9]{3}",
-		"required": true
-	}, {
-		"name": "MONGODB_PASSWORD",
-		"description": "Password for the MongoDB user",
-		"generate": "expression",
-		"from": "[a-zA-Z0-9]{16}",
-		"required": true
-	}, {
-		"name": "MONGODB_DATABASE",
-		"description": "Database name",
-		"value": "sampledb",
-		"required": true
-	}, {
-		"name": "MONGODB_ADMIN_PASSWORD",
-		"description": "Password for the database admin user",
-		"generate": "expression",
-		"from": "[a-zA-Z0-9]{16}",
-		"required": true
-	}]
+	},
+	{
+            "name": "IMAGE_STREAM_NAMESPACE",
+            "description": "Namespace in which the ImageStreams for Red Hat Middleware images are installed. These ImageStreams are normally installed in the openshift namespace. You should only need to modify this if you've installed the ImageStreams in a different namespace/project.",
+            "value": "openshift",
+            "required": true
+        },
+		{
+            "name": "CONTEXT_DIR",
+            "description": "Path within Git project to build; empty for root project directory."
+        },
+        {
+            "name": "HORNETQ_QUEUES",
+            "description": "Queue names"
+        },
+        {
+            "name": "HORNETQ_TOPICS",
+            "description": "Topic names"
+        },
+        {
+            "name": "HORNETQ_CLUSTER_PASSWORD",
+            "description": "HornetQ cluster admin password",
+            "generate": "expression",
+            "from": "[a-zA-Z0-9]{8}",
+            "required": true
+        },
+        {
+            "name": "GITHUB_WEBHOOK_SECRET",
+            "description": "GitHub trigger secret",
+            "generate": "expression",
+            "from": "[a-zA-Z0-9]{8}",
+            "required": true
+        },
+        {
+            "name": "GENERIC_WEBHOOK_SECRET",
+            "description": "Generic build trigger secret",
+            "generate": "expression",
+            "from": "[a-zA-Z0-9]{8}",
+            "required": true
+        },
+        {
+            "name": "IMAGE_STREAM_NAMESPACE",
+            "description": "Namespace in which the ImageStreams for Red Hat Middleware images are installed. These ImageStreams are normally installed in the openshift namespace. You should only need to modify this if you've installed the ImageStreams in a different namespace/project.",
+            "value": "openshift",
+            "required": true
+        },
+        {
+            "name": "DATABASE_SERVICE_NAME",
+            "description": "Database service name",
+            "value": "mongodb",
+            "required": true
+        },
+        {
+            "name": "MONGODB_USER",
+            "description": "Username for MongoDB user that will be used for accessing the database",
+            "generate": "expression",
+            "from": "user[A-Z0-9]{3}",
+            "required": true
+        },
+        {
+            "name": "MONGODB_PASSWORD",
+            "description": "Password for the MongoDB user",
+            "generate": "expression",
+            "from": "[a-zA-Z0-9]{16}",
+            "required": true
+        },
+        {
+            "name": "MONGODB_DATABASE",
+            "description": "Database name",
+            "value": "sampledb",
+            "required": true
+        },
+        {
+            "name": "MONGODB_ADMIN_PASSWORD",
+            "description": "Password for the database admin user",
+            "generate": "expression",
+            "from": "[a-zA-Z0-9]{16}",
+            "required": true
+        }
+		]
 
 }
