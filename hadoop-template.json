@@ -159,12 +159,7 @@
                                 ],
                                 
                                 "resources": {},
-                                "volumeMounts": [
-                                    {
-                                        "name": "${DATABASE_SERVICE_NAME}-data",
-                                        "mountPath": "/var/lib/mongodb/data"
-                                    }
-                                ],
+                               
                                 "terminationMessagePath": "/dev/termination-log",
                                 "imagePullPolicy": "IfNotPresent",
                                 "capabilities": {},
@@ -174,6 +169,7 @@
                                 }
                             }
                         ],
+                        
                         "restartPolicy": "Always",
                         "dnsPolicy": "ClusterFirst"
                     }
