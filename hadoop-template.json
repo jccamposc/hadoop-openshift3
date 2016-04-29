@@ -160,13 +160,9 @@
                                 
                                 "resources": {},
                                
-                                "terminationMessagePath": "/dev/termination-log",
+                                
                                 "imagePullPolicy": "IfNotPresent",
-                                "capabilities": {},
-                                "securityContext": {
-                                    "capabilities": {},
-                                    "privileged": false
-                                }
+                                "capabilities": {}
                             }
                         ],
                         
@@ -197,21 +193,7 @@
             "name": "CONTEXT_DIR",
             "description": "Path within Git project to build; empty for root project directory."
         },
-        {
-            "name": "HORNETQ_QUEUES",
-            "description": "Queue names"
-        },
-        {
-            "name": "HORNETQ_TOPICS",
-            "description": "Topic names"
-        },
-        {
-            "name": "HORNETQ_CLUSTER_PASSWORD",
-            "description": "HornetQ cluster admin password",
-            "generate": "expression",
-            "from": "[a-zA-Z0-9]{8}",
-            "required": true
-        },
+        
         {
             "name": "GITHUB_WEBHOOK_SECRET",
             "description": "GitHub trigger secret",
@@ -230,39 +212,6 @@
             "name": "IMAGE_STREAM_NAMESPACE",
             "description": "Namespace in which the ImageStreams for Red Hat Middleware images are installed. These ImageStreams are normally installed in the openshift namespace. You should only need to modify this if you've installed the ImageStreams in a different namespace/project.",
             "value": "openshift",
-            "required": true
-        },
-        {
-            "name": "DATABASE_SERVICE_NAME",
-            "description": "Database service name",
-            "value": "mongodb",
-            "required": true
-        },
-        {
-            "name": "MONGODB_USER",
-            "description": "Username for MongoDB user that will be used for accessing the database",
-            "generate": "expression",
-            "from": "user[A-Z0-9]{3}",
-            "required": true
-        },
-        {
-            "name": "MONGODB_PASSWORD",
-            "description": "Password for the MongoDB user",
-            "generate": "expression",
-            "from": "[a-zA-Z0-9]{16}",
-            "required": true
-        },
-        {
-            "name": "MONGODB_DATABASE",
-            "description": "Database name",
-            "value": "sampledb",
-            "required": true
-        },
-        {
-            "name": "MONGODB_ADMIN_PASSWORD",
-            "description": "Password for the database admin user",
-            "generate": "expression",
-            "from": "[a-zA-Z0-9]{16}",
             "required": true
         }
 		]
