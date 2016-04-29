@@ -63,6 +63,32 @@
                 }
             }
         },
+		
+		{
+  "kind": "BuildConfig",
+    "apiVersion": "v1",
+    "metadata": {
+      "name": "${APPLICATION_NAME}-build" 
+    },
+  "spec": {
+    "strategy": { 
+      "type": "Source",
+      "sourceStrategy": {
+        "from": {
+          "kind": "ImageStreamTag",
+          "name": "hadoop-openshift:latest"
+        }
+      }
+    },
+    "output": { 
+      "to": {
+        "kind": "ImageStreamTag",
+        "name": "origin-hadoop-sample:latest"
+      }
+    }
+  }
+},
+	
 	{
 		"kind": "Pod",
 		"apiVersion": "v1",
