@@ -10,14 +10,14 @@
     }
   },
   "labels": {
-    "template": "cluster-hadoop-example"
+    "template": "${APPLICATION_NAME}"
   },
    "objects": [
 		{
 		  "kind": "Service",
 		  "apiVersion": "v1",
 		  "metadata": {
-			"name": "cluster-hadoop-example",
+			"name": "${APPLICATION_NAME}",
 			"annotations": {
 			  "description": "Exposes and load balances the application pods"
 			}
@@ -31,37 +31,31 @@
 			  }
 			],
 			"selector": {
-			  "name": "cluster-hadoop-example"
+			  "name": "${APPLICATION_NAME}"
 			}
 		  }
 		},
 		{
-			"kind": "Route",
-			"apiVersion": "v1",
-			"id": "cluster-hadoop-http",
-			"metadata": {
-				"name": "$cluster-hadoop",
-				"labels": {
-					"application": "cluster-hadoop"
-				},
-				"annotations": {
-					"description": "Route for application's http service."
-				}
-			},
-			"spec": {
-				"host": "${APPLICATION_DOMAIN}",
-				"to": {
-					"name": "${APPLICATION_NAME}"
-				}
-			}
-		},
+      "kind": "Route",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${APPLICATION_NAME}"
+      },
+      "spec": {
+        "host": "${APPLICATION_DOMAIN}.development.cloud.isban.us",
+        "to": {
+          "kind": "Service",
+          "name": "${APPLICATION_NAME}"
+        }
+      }
+    },
 		{
 			"kind": "Pod",
 			"apiVersion": "v1",
 			"metadata": {
-				"name": "cluster-hadoop",
+				"name": "${APPLICATION_NAME}",
 				"labels": {
-					"application": "cluster-hadoop"
+					"application": "${APPLICATION_NAME}"
 				},
 				"annotations": {
 					"description": "Route for application's http service."
@@ -95,16 +89,16 @@
 		}		
 	],
    "parameters": [
-			{
-				"name": "APPLICATION_NAME",
-				"description": "The name for the application.",
-				"value": "cluster-hadoop",
-				"required": true
-			},
-			{
-				"name": "APPLICATION_DOMAIN",
-				"description": "Custom hostname for service routes.  Leave blank for default hostname, e.g.: \u003capplication-name\u003e.\u003cproject\u003e.\u003cdefault-domain-suffix\u003e"
-			}
+			 {
+            "name": "APPLICATION_NAME",
+            "description": "The name for the application.",
+            "value": "hadoopapp",
+            "required": true
+        },
+        {
+            "name": "APPLICATION_DOMAIN",
+            "description": "Custom hostname for service routes.  Leave blank for default hostname, e.g.: \u003capplication-name\u003e.\u003cproject\u003e.\u003cdefault-domain-suffix\u003e"
+        }
 		]
  
 } 
