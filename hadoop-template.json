@@ -136,24 +136,6 @@
                 "strategy": {
                     "type": "Recreate"
                 },
-				 "triggers": [
-                    {
-                        "type": "ImageChange",
-                        "imageChangeParams": {
-                            "automatic": true,
-                            "containerNames": [
-                                "${APPLICATION_NAME}"
-                            ],
-                            "from": {
-                                "kind": "ImageStream",
-                                "name": "${APPLICATION_NAME}"
-                            }
-                        }
-                    },
-                    {
-                        "type": "ConfigChange"
-                    }
-                ],
               
                 "replicas": 1,
                 "selector": {
