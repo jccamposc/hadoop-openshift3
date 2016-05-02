@@ -143,9 +143,10 @@
                 },
                 "template": {
                     "metadata": {
-                        "creationTimestamp": null,
+                        "name": "${APPLICATION_NAME}",
                         "labels": {
-                            "name": "${APPLICATION_NAME}"
+                            "deploymentConfig": "${APPLICATION_NAME}",
+                            "application": "${APPLICATION_NAME}"
                         }
                     },
                     "spec": {
